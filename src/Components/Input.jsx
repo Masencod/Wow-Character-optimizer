@@ -19,7 +19,7 @@ const Input = ({ onSubmit }) => {
             </select>
             <input placeholder="Enter your realm" value={realm} onChange={({target}) => setRealm(target.value.trim().toLowerCase())} type="text" className=" rounded-md p-2"/>
             <input placeholder="Enter Your name" value={name} onChange={({target}) => setName(target.value.trim().toLowerCase())} type="text" className=" rounded-md p-2"/>
-            <input type="submit" className=" rounded-md p-2 cursor-pointer bg-slate-500"/>
+            <input type="submit" className=" rounded-md p-2 cursor-pointer bg-slate-500 hover:bg-lime-900 transition-all ease-in-out duration-300"/>
         </form>
     </div>
   )
