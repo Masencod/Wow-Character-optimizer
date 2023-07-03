@@ -107,10 +107,10 @@ const CharacterEq = ({ char }) => {
           {equipment.active_spec_name && <p className={`${getSpecColor(equipment.class)}`}>{`${equipment.active_spec_name} ${equipment.class}`}</p>}
         </div>
         <div className='grid grid-cols-2 grid-rows-2 gap-x-5'>
-          {equipment.guild && <a href={`https://wowanalyzer.com/character/${char.region}/${char.realm}/${char.name}/`}><img className='h-6 w-6 rounded-full' src="/src/assets/ANALYZE.png" alt="wowanalyzer" /></a>}
-          {equipment.guild && <a href={`https://raider.io/characters/${char.region}/${char.realm}/${char.name}`}><img className='h-6 w-6 rounded-full' src="/src/assets/rio.webp" alt="raider.io" /></a>}
-          {equipment.guild && <a href={`https://www.warcraftlogs.com/character/${char.region}/${char.realm}/${char.name}`}><img className='h-6 w-6 rounded-full' src="/src/assets/WLOGS.jpg" alt="warcraft logs" /></a>}
-          {equipment.guild && <a href={`https://www.raidbots.com/simbot/quick?region=${char.region}&realm=${char.realm}&name=${char.name}`}><img className='h-6 w-6 rounded-full' src="/src/assets/bots.webp" alt="raidbots" /></a>}
+          {equipment.guild && <a href={`https://wowanalyzer.com/character/${char.region}/${char.realm}/${char.name}/`}><img className='h-6 w-6 rounded-full' src="/ANALYZE.png" alt="wowanalyzer" /></a>}
+          {equipment.guild && <a href={`https://raider.io/characters/${char.region}/${char.realm}/${char.name}`}><img className='h-6 w-6 rounded-full' src="/rio.webp" alt="raider.io" /></a>}
+          {equipment.guild && <a href={`https://www.warcraftlogs.com/character/${char.region}/${char.realm}/${char.name}`}><img className='h-6 w-6 rounded-full' src="/WLOGS.jpg" alt="warcraft logs" /></a>}
+          {equipment.guild && <a href={`https://www.raidbots.com/simbot/quick?region=${char.region}&realm=${char.realm}&name=${char.name}`}><img className='h-6 w-6 rounded-full' src="/bots.webp" alt="raidbots" /></a>}
         </div>
       </div>
       <div className='mb-5 flex gap-x-4'>
