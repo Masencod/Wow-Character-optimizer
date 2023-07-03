@@ -98,7 +98,7 @@ const CharacterEq = ({ char }) => {
       
     }, [equipment])
     return (
-    <div className='mt-5 flex flex-col gap-4 items-start justify-center items-center sm:flex-row sm:items-center'>
+    <div className='mt-5 flex flex-col gap-4 items-start justify-center items-center md:flex-row md:items-center'>
       <div className='flex gap-5'>
         {equipment.thumbnail_url && <img src={equipment.thumbnail_url} className='rounded-xl' alt="" />}
         <div className=''>
