@@ -12,6 +12,7 @@
   "dependencies": {
     "axiom": "^0.1.6",
     "axios": "^1.4.0",
+    "blizzapi": "^2.6.0",
     "passport-bnet": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

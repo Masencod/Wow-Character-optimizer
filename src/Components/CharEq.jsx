@@ -1,10 +1,103 @@
 import { useEffect, useState } from 'react';
+import { BlizzAPI } from 'blizzapi';
+import { data } from 'autoprefixer';
 
 
-
-const CharacterEq = ({ char }) => {
+const CharacterEq = ({ char,isLoading }) => {
     const [equipment, setEquipment] = useState({});
+    const [eq, setEq] = useState([]);
+    const [sockets, setSockets] = useState([]);
+    const [stats, setStats] = useState({});
     const [weekly, setWeekly] = useState('');
+    const [characData, setCharacData] = useState({})
+    const [bgAvatar, setBgAvatar] = useState('')
+    function removeCommas(str) {
+      return str.replace(/,/g, "");
+    }
+    
+    function sumStats(statsArray) {
+      const sum = {};
+    
+      for (const subArray of statsArray) {
+        for (const subSubArray of subArray) {
+          for (const subSubSubArray of subSubArray) {
+            for (const stat of subSubSubArray) {
+              const [value, type] = stat.split(" ");
+              const cleanedValue = parseInt(removeCommas(value));
+    
+              if (sum[type]) {
+                sum[type] += cleanedValue;
+              } else {
+                sum[type] = cleanedValue;
+              }
+            }
+          }
+        }
+      }
+    
+      return sum;
+    }
+    const BnetApi = new BlizzAPI({
+      region: 'eu',
+      clientId: '1126ccc7b28948a1aa7b34c9a8ff3b69',
+      clientSecret: 'LMk6KkC5OFf3a33us3Oqc34kbixXQJsH',
+    })
+    //fetch for overall char data
+    useEffect(() => {
+      setCharacData({})
+      BnetApi.query(`/profile/wow/character/${char.realm}/${char.name}?namespace=profile-eu`)
+      .then(res => setCharacData(res))
+      .catch(err => console.warn(err))
+    }, [char])
+    // fetch for bg avatar
+    useEffect(() => {
+      setBgAvatar('')
+      BnetApi.query(`/profile/wow/character/${char.realm}/${char.name}?namespace=profile-eu`)
+      .then((res) => {
+        BnetApi.query(res.media.href.split('blizzard.com')[1])
+            .then(data => setBgAvatar(data.assets[2].value))
+      })
+      .catch(err => console.warn(err))
+    }, [char])
+    // fetch for eq stats
+    useEffect(() => {
+      setEq('')
+      BnetApi.query(`/profile/wow/character/${char.realm}/${char.name}?namespace=profile-eu`)
+      .then((res) => {
+        BnetApi.query(res.equipment.href.split('blizzard.com')[1])
+            .then((reefa) => {
+              setEq(p => [...p,reefa.equipped_items.map(e => e.stats).filter(e => e != undefined).map(e => e.map(e => e.display.display_string.en_US))])
+              setSockets(p => [...p,reefa.equipped_items.map(e => e.sockets).filter(e => e != undefined).map(e => e.map(e => e.display_string.en_US))])
+              const stats = [eq , sockets]
+              const totalStats = sumStats(stats);
+              console.log(totalStats);
+            })
+      })
+      .catch(err => console.warn(err))
+    }, [char])
+    // fetch for socket stats
+    // useEffect(() => {
+    //   setEq('')
+    //   BnetApi.query(`/profile/wow/character/${char.realm}/${char.name}?namespace=profile-eu`)
+    //   .then((res) => {
+    //     BnetApi.query(res.equipment.href.split('blizzard.com')[1])
+    //         .then((bozo) => {
+              
+    //         })
+    //   })
+    //   .catch(err => console.warn(err))
+    // }, [char])
+
+    // useEffect(() => {
+    //   console.log(characData)
+    // }, [characData])
+    useEffect(() => {
+      console.log(eq)
+    }, [eq])
+    useEffect(() => {
+      console.log(sockets)
+    }, [sockets])
+
     const getSpecColor = (e) => {
       switch (e) {
         case 'Mage':
@@ -41,54 +134,61 @@ const CharacterEq = ({ char }) => {
         case 20:
           return 447;
         case 19:
-          return "444";
+          return 444;
         case 18:
-          return "444";
+          return 444;
         case 17:
-          return "441";
+          return 441;
         case 16:
-          return "441";
+          return 441;
         case 15:
-          return "437";
+          return 437;
         case 14:
-          return "437";
+          return 437;
         case 13:
-          return "434";
+          return 434;
         case 12:
-          return "434";
+          return 434;
         case 11:
-          return "431";
+          return 431;
         case 10:
-          return "431";
+          return 431;
         case 9:
-          return "428";
+          return 428;
         case 8:
-          return "428";
+          return 428;
         case 7:
-          return "424";
+          return 424;
         case 6:
-          return "424";
+          return 424;
         case 5:
-          return "421";
+          return 421;
         case 4:
-          return "421";
+          return 421;
         case 3:
-          return "418";
+          return 418;
         case 2:
-          return "415";
+          return 415;
       }
     }
     useEffect(() => {
-      if (char && char.name && char.realm && char.region) {
-        fetch(`https://raider.io/api/v1/characters/profile?region=${char.region}&realm=${char.realm}&name=${char.name}&fields=gear%2Cguild%2Ctalents%2Craid_progression%2Cmythic_plus_scores_by_season%2Cmythic_plus_weekly_highest_level_runs`)
-          .then(response => response.json())
-          .then((data) => setEquipment(data))
-          .catch(err => console.warn(err));
-      }
-    }, [char])
+      const fetchData = async () => {
+        if (char && char.name && char.realm && char.region) {
+          try {
+            const response = await fetch(`https://raider.io/api/v1/characters/profile?region=${char.region}&realm=${char.realm}&name=${char.name}&fields=gear%2Cguild%2Ctalents%2Craid_progression%2Cmythic_plus_scores_by_season%2Cmythic_plus_weekly_highest_level_runs`);
+            const data = await response.json();
+            setEquipment(data);
+            isLoading(); // Call isLoading again after data is fetched
+          } catch (err) {
+            console.warn(err);
+          }
+        }
+      };
+    
+      fetchData();
+    }, [char]);
     useEffect(() => {
       if (equipment.name) {
-        console.log(equipment)
         const firsWeekly = equipment.mythic_plus_weekly_highest_level_runs.map(e => e.mythic_level).sort((a,b) => a-b).splice(1,1)
         const secondWeekly = equipment.mythic_plus_weekly_highest_level_runs.map(e => e.mythic_level).sort((a,b) => a-b).splice(1,4)
         const thirdWeekly = equipment.mythic_plus_weekly_highest_level_runs.map(e => e.mythic_level).sort((a,b) => a-b).splice(1,8)
@@ -123,6 +223,9 @@ const CharacterEq = ({ char }) => {
           {weekly && <p>M+ Vault</p>}
           {weekly && <p>{weekly}</p>}
         </div>
+      </div>
+      <div>
+        {characData.media && <img src={bgAvatar} alt="avatar" />}
       </div>
     </div>
     );
